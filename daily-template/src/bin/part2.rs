@@ -1,5 +1,7 @@
+
+
 fn main() {
-    let file = include_str!("../../input2.txt");
+    let file = INPUT_2;
 }
 
 #[cfg(test)]

@@ -1,5 +1,5 @@
 [package]
-name = "day-01"
+name = "rs-01"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,14 +11,15 @@ nom = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 thiserror = { workspace = true }
+regex = { workspace = true }
 
 [dev-dependencies]
 
 
 [[bin]]
-name = "day-01-pt1"
+name = "rs-01-pt1"
 path = "src/bin/part1.rs"
 
 [[bin]]
-name = "day-01-pt2"
+name = "rs-01-pt2"
 path = "src/bin/part2.rs"

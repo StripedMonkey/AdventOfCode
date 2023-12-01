@@ -1,5 +1,7 @@
 use std::cmp::{self, Reverse};
 
+use rs_01::{INPUT_1, INPUT_2};
+
 const ALPHA_DIGITS: &[&str] = &[
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
@@ -70,11 +72,11 @@ fn proces_line(line: &str) -> Option<u32> {
 
 fn main() {
     println!("Running Part 2:");
-    let input = include_str!("../../input1.txt");
+    let input = INPUT_1;
     let result = input.lines().map_while(proces_line).sum::<u32>();
     assert!(result == 54581);
 
-    let input = include_str!("../../input2.txt");
+    let input = INPUT_2;
     let result = input.lines().map_while(proces_line).sum::<u32>();
     assert!(result == 281);
 }
@@ -85,14 +87,14 @@ mod test {
 
     #[test]
     fn test_input1() {
-        let input = include_str!("../../input1.txt");
+        let input = INPUT_1;
         let result = input.lines().map_while(proces_line).sum::<u32>();
         assert!(result == 54581);
     }
 
     #[test]
     fn test_input2() {
-        let input = include_str!("../../input2.txt");
+        let input = INPUT_2;
         let result = input.lines().map_while(proces_line).sum::<u32>();
         assert!(result == 281);
     }

@@ -1,5 +1,3 @@
-
-
 fn proces_line(line: &str) -> u32 {
     let first_digit = line.chars().find(|c| c.is_numeric());
     let last_digit = line.chars().rev().find(|c| c.is_numeric());
@@ -15,7 +13,7 @@ fn proces_line(line: &str) -> u32 {
 
 fn main() {
     println!("Running Part 1:");
-    let input = include_str!("../../input1.txt");
+    let input = rs_01::INPUT_1;
     assert_eq!(input.lines().map(proces_line).sum::<u32>(), 54927);
 }
 
@@ -25,7 +23,7 @@ mod test {
 
     #[test]
     fn test_process() {
-        let input = include_str!("../../input1.txt");
+        let input = rs_01::INPUT_1;
         assert_eq!(input.lines().map(proces_line).sum::<u32>(), 54927);
     }
 }
