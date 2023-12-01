@@ -1,0 +1,24 @@
+[package]
+name = "day-01"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+itertools = { workspace = true }
+nom = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+
+
+[[bin]]
+name = "day-01-pt1"
+path = "src/bin/part1.rs"
+
+[[bin]]
+name = "day-01-pt2"
+path = "src/bin/part2.rs"
