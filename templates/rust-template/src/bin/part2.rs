@@ -10,6 +10,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn first_test() {
+    fn second_test() {
     }
 }

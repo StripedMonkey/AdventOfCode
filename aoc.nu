@@ -11,76 +11,11 @@ const DAY_FORMAT = "day-{day}"
 const RUST_CONFIG = {project_name: "rs-{day}", template_name: "rust-template"}
 const NU_CONFIG = {project_name: "nu-{day}", template_name: "nu-template"}
 
-
 def RESET_TIME [] -> date  { (date now) + 1day | format date $DAILY_RESET_TIME | into datetime }
 def DEC_1ST [] -> date { date now | format date '%Y-12-01' | into datetime }
 
-# Right pad an input string with character c
-def pad [str, c: string, num: int] -> string {
-    $str | fill -a r -c $c -w $num
-}
-
-# Get the path for a particular day
-def get_day_path [year: int, day: int] -> path {
-    let path = $WORKDIR | path join $YEAR_FORMAT $DAY_FORMAT
-    {day: (pad $day '0' 2), year: (pad $year '0' 4)} | format $path
-}
-
-def get_project_template [config: record<project_name: string, template_name: string>] -> path {
-    $TEMPLATE_DIR | path join $config.template_name
-}
-
-def get_project_path [config: record<project_name: string, template_name: string>, year: int, day: int] -> path {
-    let path = $WORKDIR | path join (get_day_path $year $day) $config.project_name
-    {day: (pad $day '0' 2), year: (pad $year '0' 4)} | format $path
-}
-
-def input_url [input: int, day: int, year: int] -> string {
-    let data = {
-            day: ($day)
-            year: ($year)
-            n: $input
-        }
-    $data | format $INPUT_URL
-}
-
-def with_cookies [url: string, output: path] {
-    wget --load-cookies $COOKIE_PATH $url -O $output
-}
-
-def generate_rust_template [day: int, year: int] {
-    let project_path = get_day_path $year $day
-    if not ($project_path | path exists) {
-        mkdir $project_path
-    }
-    cd $project_path
-    let name = {year: (pad $year '0' 4), day: (pad $day '0' 2) } | format $RUST_CONFIG.project_name
-    if ($"./($name)" | path exists) {
-        print "Project already exists"
-        return
-    }
-    cargo generate --path (get_project_template $RUST_CONFIG) -f --name $name
-}
-
-
-def delay_next_day [] {
-    let current = date now
-    let dt = (DEC_1ST ) - $current
-    let wait = if $dt > 0sec {
-        # Not the month
-        $dt
-    } else {
-        if (RESET_TIME ) > ((DEC_1ST ) + 24day) {
-            print "Wait till next year!"
-            exit 0
-        }
-        (RESET_TIME) - $current
-    }
-    print $'Sleeping for ($wait)...'
-    sleep $wait
-}
-
-export def "aoc generate rust" [day: int, year?: int] {
+# Generate a new day from the rust template
+export def "aoc generate rust" [day?: int, year?: int] {
     let selected_day = if $day == null {
         date now | format date "%d" | into int
     } else {$day}
@@ -108,17 +43,10 @@ export def "aoc generate rust" [day: int, year?: int] {
     aoc input $selected_day 1 $slected_year
 }
 
-export def "aoc day" [day: int, year?: int] {
-    if (day_exists $WORKDIR) {
-        # Current day exists! Waiting for next day...
-        delay_next_day
-    }
-    generate_day $day $year
-}
-
+# Download the day's input into the appropriate location
 export def "aoc input" [
         day: int, # Day to obtain input for
-        input: int, # Input number, if multiple
+        input: int, # Input number, if multiple (Unimplemented)
         year?: int # Given year, defaults to current
     ] {
     let selected_year = if $year == null {
@@ -126,4 +54,63 @@ export def "aoc input" [
     } else {$year}
     let url = {year: $selected_year, day: $day} | format $INPUT_URL
     with_cookies $url (get_day_path $selected_year $day | path join $"input($input).txt")
+}
+
+export def "aoc test" [day?: int, year?: int] {
+    let selected_day = if $day == null {
+        date now | format date "%d" | into int
+    } else {$day}
+    let slected_year = if $year == null {
+        date now | format date "%Y"
+    } else {$year}
+    let submodule = $"rs-(pad $selected_day '0' 2)" 
+    cargo test -p $submodule
+}
+
+# Right pad an input string with character c
+def pad [str, c: string, num: int] -> string {
+    $str | fill -a r -c $c -w $num
+}
+
+# Get the path for a particular day
+def get_day_path [year: int, day: int] -> path {
+    let path = $WORKDIR | path join $YEAR_FORMAT $DAY_FORMAT
+    {day: (pad $day '0' 2), year: (pad $year '0' 4)} | format $path
+}
+
+def get_project_template [config: record<project_name: string, template_name: string>] -> path {
+    $TEMPLATE_DIR | path join $config.template_name
+}
+
+def get_project_path [config: record<project_name: string, template_name: string>, year: int, day: int] -> path {
+    let path = $WORKDIR | path join (get_day_path $year $day) $config.project_name
+    {day: (pad $day '0' 2), year: (pad $year '0' 4)} | format $path
+}
+
+# Get the formatted input URL
+def input_url [input: int, day: int, year: int] -> string {
+    let data = {
+            day: $day
+            year: $year
+            n: $input
+        }
+    $data | format $INPUT_URL
+}
+
+def with_cookies [url: string, output: path] {
+    wget --load-cookies $COOKIE_PATH $url -O $output
+}
+
+def generate_rust_template [day: int, year: int] {
+    let project_path = get_day_path $year $day
+    if not ($project_path | path exists) {
+        mkdir $project_path
+    }
+    cd $project_path
+    let name = {year: (pad $year '0' 4), day: (pad $day '0' 2) } | format $RUST_CONFIG.project_name
+    if ($"./($name)" | path exists) {
+        print "Project already exists"
+        return
+    }
+    cargo generate --path (get_project_template $RUST_CONFIG) -f --name $name
 }
