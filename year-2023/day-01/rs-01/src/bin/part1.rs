@@ -1,5 +1,6 @@
 use rs_01::*;
 
+// Brute force the first and last digits, since it's easy enough
 fn proces_line(line: &str) -> u32 {
     let first_digit = line.chars().find(|c| c.is_numeric());
     let last_digit = line.chars().rev().find(|c| c.is_numeric());
