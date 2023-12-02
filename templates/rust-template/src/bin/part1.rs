@@ -1,5 +1,7 @@
+use {{crate_name}}::*;
+
 fn main() {
-    let file = include_str!("../../../input1.txt");
+    let _file = *INPUT_1;
 }
 
 

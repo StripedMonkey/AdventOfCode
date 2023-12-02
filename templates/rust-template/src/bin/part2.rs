@@ -1,8 +1,9 @@
-
+use {{crate_name}}::*;
 
 fn main() {
-    let file = INPUT_2;
+    let _file = *INPUT_2;
 }
+
 
 #[cfg(test)]
 mod test {
