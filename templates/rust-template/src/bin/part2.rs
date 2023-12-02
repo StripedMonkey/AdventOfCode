@@ -2,6 +2,7 @@ use {{crate_name}}::*;
 
 fn main() {
     let _file = *INPUT_2;
+    println!("The answer is {}", result);
 }
 
 

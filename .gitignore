@@ -1,4 +1,4 @@
 target/
 input*.txt
-example*.txt
+# example*.txt
 cookies.txt
