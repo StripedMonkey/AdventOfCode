@@ -61,7 +61,7 @@ where
     }
 }
 
-fn proces_line(line: &str) -> Option<u32> {
+fn process_line(line: &str) -> Option<u32> {
     let (first_alpha, last_alpha) = find_alpha_digit(line);
     let (first_numeric, last_numeric) = find_numeric_digit(line);
     let first = matched_by(first_alpha, first_numeric, |n| Reverse(n.1))?;
@@ -71,14 +71,9 @@ fn proces_line(line: &str) -> Option<u32> {
 }
 
 fn main() {
-    println!("Running Part 2:");
     let input = *INPUT_1;
-    let result = input.lines().map_while(proces_line).sum::<u32>();
-    assert!(result == 54581);
-
-    let input = *INPUT_2;
-    let result = input.lines().map_while(proces_line).sum::<u32>();
-    assert!(result == 281);
+    let result = input.lines().map_while(process_line).sum::<u32>();
+    println!("The answer is {}", result);
 }
 
 #[cfg(test)]
@@ -86,16 +81,25 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_input1() {
-        let input = *INPUT_1;
-        let result = input.lines().map_while(proces_line).sum::<u32>();
-        assert!(result == 54581);
+    fn test_example1() {
+        let input = rs_01::static_read("example1.txt");
+        let result = input.lines().map_while(process_line).sum::<u32>();
+        assert_eq!(result, 142);
     }
 
     #[test]
-    fn test_input2() {
-        let input = *INPUT_2;
-        let result = input.lines().map_while(proces_line).sum::<u32>();
-        assert!(result == 281);
+    fn test_example2() {
+        let input = rs_01::static_read("example2.txt");
+        let result = input.lines().map_while(process_line).sum::<u32>();
+        assert_eq!(result, 281);
+    }
+
+    #[test]
+    // My original attempt did not account for searching for a repeating digit
+    // and only found the first, so extra verification!
+    fn test_double_digits() {
+        let input = "eighteight";
+        let result = input.lines().map_while(process_line).sum::<u32>();
+        assert_eq!(result, 88);
     }
 }
