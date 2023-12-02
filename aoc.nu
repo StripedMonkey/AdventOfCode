@@ -3,12 +3,13 @@ const INPUT_URL = "https://adventofcode.com/{year}/day/{day}/input"
 const DAILY_RESET_TIME = '%Y-%m-%d 00:00:00 -5'
 
 const WORKDIR = ("~/Projects/AdventOfCode/" | path expand)
+const TEMPLATE_DIR = ($WORKDIR | path join "templates/")
 const COOKIE_PATH = ($WORKDIR | path join "cookies.txt")
 const YEAR_FORMAT = "year-{year}"
 const DAY_FORMAT = "day-{day}"
 
-const RUST_CONFIG = {project_name: "rs-{day}", template_name: "daily-template"}
-const NU_CONFIG = {project_name: "nu-{day}", template_name: "daily-template-nu"}
+const RUST_CONFIG = {project_name: "rs-{day}", template_name: "rust-template"}
+const NU_CONFIG = {project_name: "nu-{day}", template_name: "nu-template"}
 
 
 def RESET_TIME [] -> date  { (date now) + 1day | format date $DAILY_RESET_TIME | into datetime }
@@ -25,7 +26,7 @@ def get_day_path [year: int, day: int] -> path {
 }
 
 def get_project_template [config: record<project_name: string, template_name: string>] -> path {
-    $WORKDIR | path join $config.template_name
+    $TEMPLATE_DIR | path join $config.template_name
 }
 
 def get_project_path [config: record<project_name: string, template_name: string>, year: int, day: int] -> path {
