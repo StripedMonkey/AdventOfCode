@@ -1,4 +1,7 @@
-use std::{env, fmt::Display, path::PathBuf, str::FromStr};
+use std::{env, fmt::Display, mem, path::PathBuf, str::FromStr};
+
+use itertools::Itertools;
+use nom::AsChar;
 
 #[macro_use]
 extern crate lazy_static;
@@ -20,21 +23,27 @@ pub fn static_read(file_path: &str) -> &'static str {
     Box::leak(file.into_boxed_str())
 }
 
+pub type Location = (usize, usize);
+pub type Offset = (isize, isize);
+
 #[derive(Debug)]
 pub struct Schematic<'a> {
-    board: &'a str,
+    board: &'a [u8],
+    line_length: usize,
 }
 
 impl Display for Schematic<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.board)
+        write!(f, "{}", unsafe {
+            mem::transmute::<&[u8], &str>(self.board)
+        })
     }
 }
 
 struct AdjacentNumberIterator<'a> {
     schematic: &'a Schematic<'a>,
-    centerpoint: (usize, usize),
-    to_check: Vec<(isize, isize)>,
+    centerpoint: Location,
+    to_check: Vec<Offset>,
 }
 
 impl<'a> Iterator for AdjacentNumberIterator<'a> {
@@ -90,34 +99,40 @@ impl<'a> Iterator for AdjacentNumberIterator<'a> {
 
 impl Schematic<'_> {
     pub fn new(board: &str) -> Schematic {
-        Schematic { board }
+        let line_length = board.lines().next().unwrap().len() + 1;
+        Schematic {
+            board: board.as_bytes(),
+            line_length,
+        }
     }
 
     pub fn part_label_sum(&self, x: usize, y: usize) -> usize {
         self.adjacent_numbers(x, y).sum()
     }
 
-    pub fn parts_locations(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
-        self.board.lines().enumerate().flat_map(|(j, row)| {
-            row.chars().enumerate().filter_map(move |(i, c)| match c {
-                '.' => None,
-                c if c.is_numeric() => None,
-                _ => Some((i, j)),
+    fn loc_by_predicate<'a, F>(&'a self, p: F) -> impl Iterator<Item = Location> + '_
+    where
+        F: Fn(char) -> bool + 'a,
+    {
+        self.board
+            .iter()
+            .enumerate()
+            .filter_map(move |(i, c)| match c.as_char() {
+                c if !p(c) => None,
+                _ => Some((i % self.line_length, i / self.line_length)),
             })
-        })
     }
 
-    pub fn location_by_type(&self, t: char) -> impl Iterator<Item = (usize, usize)> + '_ {
-        self.board.lines().enumerate().flat_map(move |(j, row)| {
-            row.chars().enumerate().filter_map(move |(i, c)| match c {
-                c if c == t => Some((i, j)),
-                _ => None,
-            })
-        })
+    pub fn parts_locations(&self) -> impl Iterator<Item = Location> + '_ {
+        self.loc_by_predicate(|c| !c.is_numeric() && c != '.' && !c.is_whitespace())
+    }
+
+    pub fn location_by_type(&self, t: char) -> impl Iterator<Item = Location> + '_ {
+        self.loc_by_predicate(move |c| c == t)
     }
 
     fn get_loc(&self, x: usize, y: usize) -> Option<char> {
-        self.board.lines().nth(y)?.chars().nth(x)
+        self.board.get(y * self.line_length + x).map(|c| *c as char)
     }
 
     pub fn adjacent_numbers(&self, x: usize, y: usize) -> impl Iterator<Item = usize> + '_ {
@@ -138,7 +153,7 @@ impl Schematic<'_> {
         }
     }
 
-    pub fn gear_ratio(&self, x: usize, y: usize) -> Option<(usize, usize)> {
+    pub fn gear_ratio(&self, x: usize, y: usize) -> Option<Location> {
         let v: Vec<_> = self.adjacent_numbers(x, y).collect();
         if v.len() == 2 {
             return Some((v[0], v[1]));
