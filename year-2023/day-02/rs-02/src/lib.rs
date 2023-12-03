@@ -38,7 +38,7 @@ pub struct Game<'a> {
     rounds: Vec<Vec<(u64, &'a str)>>,
 }
 
-fn parse_game<'a>(line: &'a str) -> IResult<&str, Game<'a>> {
+fn parse_game(line: &str) -> IResult<&str, Game<'_>> {
     let (line, _) = tag("Game ")(line)?;
     let (line, n) = u64(line)?;
     let (line, _) = tag(": ")(line)?;
@@ -54,7 +54,7 @@ fn parse_game<'a>(line: &'a str) -> IResult<&str, Game<'a>> {
         n: n as usize,
         rounds,
     };
-    return Ok((line, game));
+    Ok((line, game))
 }
 
 // Find the number of red, green, and blue widgets in a round.
@@ -90,12 +90,12 @@ impl<'i> Game<'i> {
         red * green * blue
     }
 
-    pub fn from_str(line: &'i str) -> Result<Self, NomError<&'i str>> {
+    pub fn from_str(line: &'i str) -> Result<Self, NomError<&'_ str>> {
         let (_, game) = parse_game(line)?;
         Ok(game)
     }
 
-    pub fn iter_rounds(&self) -> impl Iterator<Item = &Vec<(u64, &'i str)>> {
+    pub fn iter_rounds(&self) -> impl Iterator<Item = &Vec<(u64, &'_ str)>> {
         self.rounds.iter()
     }
 

@@ -57,7 +57,7 @@ where
     if let (Some(a), Some(b)) = (a, b) {
         Some(cmp::max_by_key(a, b, f).0)
     } else {
-        a.or(b).map(|n| n.0 as u32)
+        a.or(b).map(|n| n.0)
     }
 }
 
