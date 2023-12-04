@@ -1,5 +1,4 @@
 use rs_02::*;
-
 const MAX_RGB: Rgb = (12, 13, 14);
 
 fn main() {

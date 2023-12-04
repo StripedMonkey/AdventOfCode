@@ -58,7 +58,7 @@ fn parse_game(line: &str) -> IResult<&str, Game<'_>> {
 }
 
 // Find the number of red, green, and blue widgets in a round.
-pub fn round_rgb(round: &Vec<(u64, &str)>) -> (u64, u64, u64) {
+pub fn round_rgb(round: &Vec<(u64, &str)>) -> Rgb {
     let (mut red, mut green, mut blue) = (0, 0, 0);
     for (n, color) in round {
         match *color {
@@ -73,7 +73,7 @@ pub fn round_rgb(round: &Vec<(u64, &str)>) -> (u64, u64, u64) {
 
 impl<'i> Game<'i> {
     /// Find the minimum number of red, green, and blue widgets required for a round to have occurred
-    pub fn lower_rgb_bound(&self) -> (u64, u64, u64) {
+    pub fn lower_rgb_bound(&self) -> Rgb {
         self.rounds
             .iter()
             .map(round_rgb)
