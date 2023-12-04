@@ -1,7 +1,7 @@
 use rs_01::*;
 
 // Brute force the first and last digits, since it's easy enough
-fn proces_line(line: &str) -> u32 {
+fn process_line(line: &str) -> u32 {
     let first_digit = line.chars().find(|c| c.is_numeric());
     let last_digit = line.chars().rev().find(|c| c.is_numeric());
     match (first_digit, last_digit) {
@@ -17,7 +17,7 @@ fn proces_line(line: &str) -> u32 {
 fn main() {
     println!("Running Part 1:");
     let input = *INPUT_1;
-    assert_eq!(input.lines().map(proces_line).sum::<u32>(), 54927);
+    assert_eq!(input.lines().map(process_line).sum::<u32>(), 54927);
 }
 
 #[cfg(test)]
@@ -27,6 +27,6 @@ mod test {
     #[test]
     fn test_process() {
         let input = *INPUT_1;
-        assert_eq!(input.lines().map(proces_line).sum::<u32>(), 54927);
+        assert_eq!(input.lines().map(process_line).sum::<u32>(), 54927);
     }
 }
