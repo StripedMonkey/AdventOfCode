@@ -1,6 +1,5 @@
 use std::{env, fmt::Display, mem, path::PathBuf, str::FromStr};
 
-use itertools::Itertools;
 use nom::AsChar;
 
 #[macro_use]
@@ -53,46 +52,48 @@ impl<'a> Iterator for AdjacentNumberIterator<'a> {
         loop {
             let (signed_dx, signed_dy) = self.to_check.pop()?;
             let (Some(check_x), Some(check_y)) = (
+                // if the resulting Add goes neg, it's an invalid coordinate
                 self.centerpoint.0.checked_add_signed(signed_dx),
                 self.centerpoint.1.checked_add_signed(signed_dy),
             ) else {
                 continue;
             };
-
-            if let Some(n) = self.schematic.get_loc(check_x, check_y) {
-                if !n.is_numeric() {
-                    continue;
-                }
-                let mut start_x = check_x;
-                while let Some(n) = self.schematic.get_loc(start_x, check_y) {
-                    if start_x == 0 || !n.is_numeric() {
-                        break;
-                    }
-                    if let Some(n) = self.schematic.get_loc(start_x - 1, check_y) {
-                        if n.is_numeric() {
-                            start_x -= 1;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                let mut value = 0;
-                while let Some(n) = self.schematic.get_loc(start_x, check_y) {
-                    if !n.is_numeric() {
-                        break;
-                    }
-
-                    self.to_check.retain(|e| {
-                        (
-                            e.0 + self.centerpoint.0 as isize,
-                            e.1 + self.centerpoint.1 as isize,
-                        ) != (start_x as isize, check_y as isize)
-                    });
-                    start_x += 1;
-                    value = (value * 10) + n.to_digit(10).unwrap();
-                }
-                return Some(value as usize);
+            let Some(n) = self.schematic.get_loc(check_x, check_y) else {
+                continue;
+            };
+            if !n.is_numeric() {
+                continue;
             }
+            // Find the beginning of the number string
+            let mut start_x = check_x;
+            while let Some(n) = self.schematic.get_loc(start_x, check_y) {
+                if start_x == 0 || !n.is_numeric() {
+                    break;
+                }
+                if let Some(n) = self.schematic.get_loc(start_x - 1, check_y) {
+                    if n.is_numeric() {
+                        start_x -= 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            let mut value = 0;
+            while let Some(n) = self.schematic.get_loc(start_x, check_y) {
+                if !n.is_numeric() {
+                    break;
+                }
+
+                self.to_check.retain(|e| {
+                    (
+                        e.0 + self.centerpoint.0 as isize,
+                        e.1 + self.centerpoint.1 as isize,
+                    ) != (start_x as isize, check_y as isize)
+                });
+                start_x += 1;
+                value = (value * 10) + n.to_digit(10).unwrap();
+            }
+            return Some(value as usize);
         }
     }
 }
@@ -132,6 +133,9 @@ impl Schematic<'_> {
     }
 
     fn get_loc(&self, x: usize, y: usize) -> Option<char> {
+        if x >= self.line_length || y > self.board.len() / self.line_length {
+            return None;
+        }
         self.board.get(y * self.line_length + x).map(|c| *c as char)
     }
 
