@@ -1,4 +1,4 @@
-use std::{env, path::PathBuf, str::FromStr};
+use std::{collections::VecDeque, env, path::PathBuf, str::FromStr};
 
 use nom::{
     bytes::complete::tag,
@@ -28,24 +28,51 @@ pub fn static_read(file_path: &str) -> &'static str {
     Box::leak(file.into_boxed_str())
 }
 
+pub struct CardStack(Vec<ScratchCard>);
+
+impl CardStack {
+    pub fn new(card_stack: Vec<ScratchCard>) -> Self {
+        Self(card_stack)
+    }
+
+    pub fn duplicate(&self) -> usize {
+        let mut propogated_winnings = VecDeque::<usize>::new();
+
+        self.0.iter().fold(0, |acc, card| {
+            let card_count = card.matches().count();
+            let duplicate_cards = propogated_winnings.pop_front().unwrap_or(0);
+            for idx in 0..card_count {
+                if let Some(i) = propogated_winnings.get_mut(idx) {
+                    *i += duplicate_cards + 1;
+                } else {
+                    propogated_winnings.push_back(duplicate_cards + 1);
+                }
+            }
+            1 + acc + duplicate_cards
+        })
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct ScratchCard {
-    card: usize,
+    pub card: usize,
     winning_numbers: Vec<u32>, // Sorted!
     your_numbers: Vec<u32>,    // Sorted!
 }
 
 impl ScratchCard {
     pub fn points(&self) -> usize {
+        let count = self
+            .your_numbers
+            .iter()
+            .filter(|c| self.winning_numbers.binary_search(c).is_ok())
+            .count();
+        1 << (count) >> 1
+    }
+    pub fn matches(&self) -> impl Iterator<Item = &u32> {
         self.your_numbers
             .iter()
             .filter(|c| self.winning_numbers.binary_search(c).is_ok())
-            .fold(0, |acc, _| if acc == 0 { 1 } else { acc * 2 })
-    }
-    pub fn matches(&self) -> impl Iterator<Item = &u32> {
-        self.your_numbers.iter().filter(|c| {
-            self.winning_numbers.binary_search(c).is_ok()
-        })
     }
 }
 
