@@ -31,26 +31,20 @@ pub fn static_read(file_path: &str) -> &'static str {
 #[derive(Debug, Clone)]
 pub struct ScratchCard {
     card: usize,
-    winning_numbers: Vec<u32>,
-    your_numbers: Vec<u32>,
+    winning_numbers: Vec<u32>, // Sorted!
+    your_numbers: Vec<u32>,    // Sorted!
 }
 
 impl ScratchCard {
     pub fn points(&self) -> usize {
         self.your_numbers
             .iter()
-            .filter(|c| {
-                if self.winning_numbers.contains(c) {}
-                self.winning_numbers.contains(c)
-            })
+            .filter(|c| self.winning_numbers.binary_search(c).is_ok())
             .fold(0, |acc, _| if acc == 0 { 1 } else { acc * 2 })
     }
     pub fn matches(&self) -> impl Iterator<Item = &u32> {
         self.your_numbers.iter().filter(|c| {
-            // if self.winning_numbers.contains(c) {
-            //     println!("Card {} matches {}", self.card, c);
-            // }
-            self.winning_numbers.contains(c)
+            self.winning_numbers.binary_search(c).is_ok()
         })
     }
 }
@@ -59,9 +53,11 @@ pub fn parse_scratchcard(line: &str) -> IResult<&str, ScratchCard> {
     let (line, _) = tag("Card")(line)?;
     let (line, card) = preceded(multispace1, u32)(line)?;
     let (line, _) = terminated(tag(":"), multispace1)(line)?;
-    let (line, winning_numbers) = separated_list1(multispace1, u32)(line)?;
+    let (line, mut winning_numbers) = separated_list1(multispace1, u32)(line)?;
     let (line, _) = delimited(multispace0, tag("|"), multispace0)(line)?;
-    let (line, your_numbers) = separated_list1(multispace1, u32)(line)?;
+    let (line, mut your_numbers) = separated_list1(multispace1, u32)(line)?;
+    winning_numbers.sort();
+    your_numbers.sort();
     Ok((
         line,
         ScratchCard {

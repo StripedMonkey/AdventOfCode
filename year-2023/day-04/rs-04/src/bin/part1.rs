@@ -7,13 +7,8 @@ fn main() {
     let result = input
         .lines()
         .map(parse_scratchcard)
-        .map_ok(|e| {
-            let card = e.1;
-            let points = card.points();
-            points
-        })
-        .fold_ok(0, |acc, c| acc + c)
-        .unwrap();
+        .filter_map(|e| Some(e.ok()?.1.points()))
+        .fold(0, |acc, c| acc + c);
     println!("The answer is {}", result);
 }
 
@@ -27,13 +22,8 @@ mod test {
         let result = input
             .lines()
             .map(parse_scratchcard)
-            .map_ok(|e| {
-                let card = e.1;
-                let points = card.points();
-                points
-            })
-            .fold_ok(0, |acc, c| acc + c)
-            .unwrap();
+            .filter_map(|e| Some(e.ok()?.1.points()))
+            .fold(0, |acc, c| acc + c);
         assert_eq!(result, 13);
     }
 }
