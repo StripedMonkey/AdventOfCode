@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use nom::{character::complete::alphanumeric1, IResult};
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap};
 
 use rs_07::*;
 
@@ -8,12 +8,6 @@ use rs_07::*;
 pub struct CardHand<'a> {
     hand: &'a str,
     bid: u64,
-}
-
-impl Ord for CardHand<'_> {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        todo!()
-    }
 }
 
 #[derive(Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -42,30 +36,34 @@ fn sort_card_key(c: &char) -> u32 {
         'A' => 14,
         'K' => 13,
         'Q' => 12,
-        'J' => 0,
         'T' => 10,
+        'J' => 0,
         c => c.to_digit(10).unwrap(),
     }
 }
 
-impl PartialOrd for CardHand<'_> {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+impl Ord for CardHand<'_> {
+    fn cmp(&self, other: &Self) -> Ordering {
         let self_type = self.get_type();
         let other_type = other.get_type();
         if self_type != other_type {
-            return Some(self_type.cmp(&other_type));
+            return self_type.cmp(&other_type);
         }
-        if let Some(x) = self
-            .hand
-            .chars()
-            .zip(other.hand.chars())
-            .find_or_first(|(a, b)| a != b)
-        {
+        let self_chars = self.hand.chars();
+        let other_chars = other.hand.chars();
+        if let Some(x) = self_chars.zip(other_chars).find(|(a, b)| a != b) {
             let self_value = sort_card_key(&x.0);
             let other_value = sort_card_key(&x.1);
-            return Some(other_value.cmp(&self_value));
+            println!("Self {self_value} Other {other_value}");
+            return other_value.cmp(&self_value);
         }
-        None
+        Ordering::Equal
+    }
+}
+
+impl PartialOrd for CardHand<'_> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(&other))
     }
 }
 
@@ -123,7 +121,7 @@ fn main() {
         .map(|line| parse_line(line).unwrap().1)
         .collect::<Vec<_>>();
     result.sort();
-    result.reverse();
+    // result.reverse();
     let result = result
         .iter()
         .enumerate()
@@ -149,15 +147,19 @@ mod test {
             .map(|line| parse_line(line).unwrap().1)
             .collect::<Vec<_>>();
         result.sort();
-        result.reverse();
+        // result.reverse();
         let result = result
             .iter()
             .enumerate()
             .inspect(|(i, card)| {
-                println!("Hand {card:?}");
-                println!("Rank {} type {:?}", i + 1, card.get_type());
+                println!(
+                    "Rank {} type {:?} {:?}",
+                    (result.len() - i),
+                    card.get_type(),
+                    card
+                );
             })
-            .map(|(i, x)| x.bid * (i as u64 + 1))
+            .map(|(i, x)| x.bid * (result.len() - i) as u64)
             .sum::<u64>();
         assert_eq!(result, 5905);
     }
