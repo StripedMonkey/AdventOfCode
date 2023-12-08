@@ -1,0 +1,29 @@
+[package]
+name = "rs-08"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+itertools = { workspace = true }
+nom = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+thiserror = { workspace = true }
+lazy_static = { workspace = true }
+num = "*"
+
+
+[dev-dependencies]
+
+# Separate binaries are produced through the use of a separate "executable" located in `src/bin`
+# See https://doc.rust-lang.org/cargo/guide/project-layout.html
+# Each binary may be run with `cargo run --bin rs-08-pt<n>` without requiring the other to build
+[[bin]]
+name = "rs-08-pt1"
+path = "src/bin/part1.rs"
+
+[[bin]]
+name = "rs-08-pt2"
+path = "src/bin/part2.rs"
