@@ -1,6 +1,5 @@
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap};
 
-use itertools::Itertools;
 use nom::{character::complete::alphanumeric1, IResult};
 use rs_07::*;
 
@@ -21,7 +20,7 @@ enum HandType {
     HighCard,
 }
 
-fn sort_card_key(c: &char) -> u32 {
+fn card_value(c: &char) -> u32 {
     match c {
         'A' => 14,
         'K' => 13,
@@ -33,32 +32,26 @@ fn sort_card_key(c: &char) -> u32 {
 }
 
 impl Ord for CardHand<'_> {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        todo!()
+    fn cmp(&self, other: &Self) -> Ordering {
+        let self_type = self.get_type();
+        let other_type = other.get_type();
+        if self_type != other_type {
+            return self_type.cmp(&other_type);
+        }
+        let self_chars = self.hand.chars();
+        let other_chars = other.hand.chars();
+        if let Some(x) = self_chars.zip(other_chars).find(|(a, b)| a != b) {
+            let self_value = card_value(&x.0);
+            let other_value = card_value(&x.1);
+            return other_value.cmp(&self_value);
+        }
+        Ordering::Equal
     }
 }
 
 impl PartialOrd for CardHand<'_> {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        let self_type = self.get_type();
-        let other_type = other.get_type();
-        if self_type != other_type {
-            return Some(self_type.cmp(&other_type))
-        }
-        // Priority 
-        // let self_hand = self.hand.chars().sorted_by_cached_key(sort_card_key).rev().collect::<String>();
-        // let other_hand = other.hand.chars().sorted_by_cached_key(sort_card_key).rev().collect::<String>();
-        // println!("Self hand: {self_hand}");
-        // println!("Other hand: {other_hand}");
-        if let Some(x) = self.hand.chars()
-            .zip(other.hand.chars())
-            .find_or_first(|(a, b)| a != b)
-        {
-            let self_value = sort_card_key(&x.0);
-            let other_value = sort_card_key(&x.1);
-            return Some(other_value.cmp(&self_value));
-        }
-        None
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -68,14 +61,12 @@ impl CardHand<'_> {
             *acc.entry(card).or_insert(0) += 1;
             acc
         });
-        let card_counts = binding.iter().collect::<Vec<_>>();        
+        let card_counts = binding.iter().collect::<Vec<_>>();
         if card_counts.len() == 1 {
             return HandType::FiveOfAKind;
         }
-        if card_counts.len() == 2 {
-            if card_counts.iter().any(|(_, &count)| count == 4) {
-                return HandType::FourOFAKind;
-            }
+        if card_counts.len() == 2 && card_counts.iter().any(|(_, &count)| count == 4) {
+            return HandType::FourOFAKind;
         }
         if card_counts.iter().any(|(_, &count)| count == 3) {
             if card_counts.iter().any(|(_, &count)| count == 2) {
@@ -94,21 +85,21 @@ impl CardHand<'_> {
 }
 
 // 32T3K 765
-fn parse_line(line: &str) -> IResult<&str, CardHand> {
+fn parse_hand(line: &str) -> IResult<&str, CardHand> {
     let (line, hand) = alphanumeric1(line)?;
     let (line, _) = nom::character::complete::space1(line)?;
     let (line, bid) =
         nom::combinator::map_res(nom::character::complete::digit1, |s: &str| s.parse::<u64>())(
             line,
         )?;
-    Ok((line, CardHand { hand: hand, bid }))
+    Ok((line, CardHand { hand, bid }))
 }
 
 fn main() {
     let file = *INPUT_1;
     let mut result = file
         .lines()
-        .map(|line| parse_line(line).unwrap().1)
+        .map(|line| parse_hand(line).unwrap().1)
         .collect::<Vec<_>>();
     result.sort();
     result.reverse();
@@ -121,7 +112,8 @@ fn main() {
         })
         .map(|(i, x)| x.bid * (i as u64 + 1))
         .sum::<u64>();
-    println!("{result:?}");}
+    println!("{result:?}");
+}
 
 #[cfg(test)]
 mod test {
@@ -133,7 +125,7 @@ mod test {
         let file = rs_07::static_read("example1.txt");
         let mut result = file
             .lines()
-            .map(|line| parse_line(line).unwrap().1)
+            .map(|line| parse_hand(line).unwrap().1)
             .collect::<Vec<_>>();
         result.sort();
         result.reverse();
