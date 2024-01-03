@@ -11,7 +11,7 @@ const DAY_FORMAT = "day-{day}"
 const RUST_CONFIG = {project_name: "rs-{day}", template_name: "rust-template"}
 const NU_CONFIG = {project_name: "nu-{day}", template_name: "nu-template"}
 
-def RESET_TIME [] -> date  { (date now) + 1day | format date $DAILY_RESET_TIME | into datetime }
+def RESET_TIME [] -> date  { (date now) + 1day | format date $DAILY_RESET_TIME | into datetime + 10s}
 def DEC_1ST [] -> date { date now | format date '%Y-12-01' | into datetime }
 
 # Generate a new day from the rust template
