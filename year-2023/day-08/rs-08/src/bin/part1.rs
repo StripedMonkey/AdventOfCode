@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use rs_08::*;
+use rs_2023_08::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -22,7 +20,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_08::static_read("example1.txt");
+        let file = rs_2023_08::static_read("example1.txt");
         let result = parse_network(&file).unwrap().1;
         let result = result
             .walk("AAA")
@@ -37,7 +35,7 @@ mod test {
 
     #[test]
     fn second_test() {
-        let file = rs_08::static_read("example2.txt");
+        let file = rs_2023_08::static_read("example2.txt");
         let result = parse_network(&file).unwrap().1;
         let result = result
             .walk("AAA")

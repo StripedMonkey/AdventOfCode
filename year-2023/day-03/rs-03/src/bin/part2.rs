@@ -1,4 +1,4 @@
-use rs_03::*;
+use rs_2023_03::*;
 
 fn main() {
     let input = *INPUT_1;
@@ -18,7 +18,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input = rs_03::static_read("example1.txt");
+        let input = rs_2023_03::static_read("example1.txt");
         let s = Schematic::new(input);
         println!("{s}");
         let gear_ratio_sum = s

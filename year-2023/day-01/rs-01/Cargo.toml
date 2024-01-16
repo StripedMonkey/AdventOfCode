@@ -1,5 +1,5 @@
 [package]
-name = "rs-01"
+name = "rs-2023-01"
 version = "0.1.0"
 edition = "2021"
 
@@ -18,9 +18,9 @@ lazy_static = { workspace = true }
 
 
 [[bin]]
-name = "rs-01-pt1"
+name = "rs-2023-01-pt1"
 path = "src/bin/part1.rs"
 
 [[bin]]
-name = "rs-01-pt2"
+name = "rs-2023-01-pt2"
 path = "src/bin/part2.rs"

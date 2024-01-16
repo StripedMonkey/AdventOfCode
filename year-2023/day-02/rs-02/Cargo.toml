@@ -1,5 +1,5 @@
 [package]
-name = "rs-02"
+name = "rs-2023-02"
 version = "0.1.0"
 edition = "2021"
 
@@ -17,9 +17,9 @@ regex = { workspace = true }
 [dev-dependencies]
 
 [[bin]]
-name = "rs-02-pt1"
+name = "rs-2023-02-pt1"
 path = "src/bin/part1.rs"
 
 [[bin]]
-name = "rs-02-pt2"
+name = "rs-2023-02-pt2"
 path = "src/bin/part2.rs"

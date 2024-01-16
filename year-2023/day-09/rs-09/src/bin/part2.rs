@@ -1,4 +1,4 @@
-use rs_09::*;
+use rs_2023_09::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -16,7 +16,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_09::static_read("example1.txt");
+        let file = rs_2023_09::static_read("example1.txt");
         let result = file
             .lines()
             .map(|line| parse_history(line).unwrap().1)

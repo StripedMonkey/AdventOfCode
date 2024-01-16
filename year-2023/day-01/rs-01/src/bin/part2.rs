@@ -1,6 +1,6 @@
 use std::cmp::{self, Reverse};
 
-use rs_01::*;
+use rs_2023_01::*;
 
 const ALPHA_DIGITS: &[&str] = &[
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
@@ -82,14 +82,14 @@ mod test {
 
     #[test]
     fn test_example1() {
-        let input = rs_01::static_read("example1.txt");
+        let input = rs_2023_01::static_read("example1.txt");
         let result = input.lines().map_while(process_line).sum::<u32>();
         assert_eq!(result, 142);
     }
 
     #[test]
     fn test_example2() {
-        let input = rs_01::static_read("example2.txt");
+        let input = rs_2023_01::static_read("example2.txt");
         let result = input.lines().map_while(process_line).sum::<u32>();
         assert_eq!(result, 281);
     }

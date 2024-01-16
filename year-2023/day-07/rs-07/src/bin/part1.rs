@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, collections::HashMap};
 
 use nom::{character::complete::alphanumeric1, IResult};
-use rs_07::*;
+use rs_2023_07::*;
 
 #[derive(Debug, Eq, PartialEq)]
 struct CardHand<'a> {
@@ -122,7 +122,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_07::static_read("example1.txt");
+        let file = rs_2023_07::static_read("example1.txt");
         let mut result = file
             .lines()
             .map(|line| parse_hand(line).unwrap().1)

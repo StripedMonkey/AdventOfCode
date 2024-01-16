@@ -1,4 +1,4 @@
-use rs_04::*;
+use rs_2023_04::*;
 
 fn main() {
     let input = *INPUT_1;
@@ -16,7 +16,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input = rs_04::static_read("example1.txt");
+        let input = rs_2023_04::static_read("example1.txt");
         let result = input
             .lines()
             .map(parse_scratchcard)

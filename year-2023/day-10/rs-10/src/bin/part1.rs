@@ -3,7 +3,7 @@ use std::{
     fmt::Display,
 };
 
-use rs_10::*;
+use rs_2023_10::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -41,7 +41,6 @@ struct CycleFinder<'a> {
     maze: &'a PipeMaze,
     start: Position,
     visited: HashSet<Position>,
-    edges: HashSet<(Position, Position)>,
 }
 
 impl Display for CycleFinder<'_> {
@@ -117,13 +116,17 @@ impl PipeMaze {
 
     fn mutually_adj(&self, current_pos: Position) -> Option<Vec<Position>> {
         let adj = self.adjacent(current_pos)?;
-        Some(adj.iter().filter_map(|pos| {
-            let other_adj = self.adjacent(*pos)?;
-            if other_adj.contains(&current_pos) {
-                return Some(*pos);
-            }
-            None
-        }).collect())
+        Some(
+            adj.iter()
+                .filter_map(|pos| {
+                    let other_adj = self.adjacent(*pos)?;
+                    if other_adj.contains(&current_pos) {
+                        return Some(*pos);
+                    }
+                    None
+                })
+                .collect(),
+        )
     }
     fn adjacent(&self, pos: Position) -> Option<Vec<Position>> {
         let ch = self.get_position(&pos);
@@ -161,7 +164,6 @@ impl PipeMaze {
             maze: self,
             start: self.starting_positions().next().unwrap(),
             visited: HashSet::new(),
-            edges: HashSet::new(),
         };
         finder.find_cycle();
     }
@@ -173,7 +175,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_10::static_read("example1.txt");
+        let file = rs_2023_10::static_read("example1.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         maze.find_cycle();

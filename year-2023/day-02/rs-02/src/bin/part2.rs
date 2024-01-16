@@ -1,4 +1,4 @@
-use rs_02::*;
+use rs_2023_02::*;
 
 fn main() {
     // Find only games which can contain 12 red, 13 green, and 14 blue
@@ -17,7 +17,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input: &str = rs_02::static_read("example1.txt");
+        let input: &str = rs_2023_02::static_read("example1.txt");
         let num: u64 = input
             .lines()
             .map(|line| Game::from_str(line).unwrap())

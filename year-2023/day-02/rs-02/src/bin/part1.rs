@@ -1,4 +1,4 @@
-use rs_02::*;
+use rs_2023_02::*;
 const MAX_RGB: Rgb = (12, 13, 14);
 
 fn main() {
@@ -19,7 +19,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input = rs_02::static_read("example1.txt");
+        let input = rs_2023_02::static_read("example1.txt");
         let num = input
             .lines()
             .map(|line| Game::from_str(line).unwrap())

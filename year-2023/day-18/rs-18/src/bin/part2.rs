@@ -6,7 +6,7 @@ use nom::{
     combinator::map,
     IResult,
 };
-use rs_18::*;
+use rs_2023_18::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -14,7 +14,6 @@ fn main() {
     let result = plan.direct_volume(Clock::Clockwise);
     println!("Result: {}", result);
 }
-
 
 fn parse_color(color_str: &str) -> IResult<&str, &str> {
     let (color_str, _) = tag("(#")(color_str)?;
@@ -39,10 +38,7 @@ fn parse_step(step: &str) -> IResult<&str, DigStep> {
         _ => panic!(),
     };
 
-    Ok((
-        step,
-        DigStep::new(direction, distance),
-    ))
+    Ok((step, DigStep::new(direction, distance)))
 }
 
 fn parse_file(file: &str) -> IResult<&str, DigPlan> {
@@ -56,7 +52,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_18::static_read("example1.txt");
+        let file = rs_2023_18::static_read("example1.txt");
         let (_, plan) = parse_file(file).unwrap();
 
         let result = plan.direct_volume(Clock::Clockwise);

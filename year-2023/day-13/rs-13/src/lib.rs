@@ -1,4 +1,4 @@
-use std::{fmt::Display,env, path::PathBuf, str::FromStr};
+use std::{env, fmt::Display, path::PathBuf, str::FromStr};
 
 use nom::{
     bytes::complete::tag,
@@ -7,17 +7,16 @@ use nom::{
     IResult,
 };
 
-#[macro_use]
-extern crate lazy_static;
+use lazy_static::lazy_static;
 
 // The input texts are static, should it be? Probably not, but it was an excuse to do it this way.
-lazy_static!{
+lazy_static! {
     pub static ref INPUT_1: &'static str = static_read("input1.txt");
     pub static ref INPUT_2: &'static str = static_read("input2.txt");
 }
 
 // Read a file path relative to the parent of the current day's project directory.
-// Each day contains the inputs and examples for that day in the the parent, so I can 
+// Each day contains the inputs and examples for that day in the the parent, so I can
 // (in theory/later) share the inputs between multiple languages. Pretend like I'll actually do that.
 pub fn static_read(file_path: &str) -> &'static str {
     let mut cwd = PathBuf::from_str(env!("CARGO_MANIFEST_DIR")).expect("Infallible action failed!");
@@ -143,6 +142,7 @@ impl MirrorInput {
         }
         self.fudge_column_eq(bottom_row, top_row, &mut false)
     }
+
     fn fudge_column_eq(&self, bottom_row: usize, top_row: usize, can_fudge: &mut bool) -> bool {
         if top_row >= self.grid[0].len() {
             panic!();

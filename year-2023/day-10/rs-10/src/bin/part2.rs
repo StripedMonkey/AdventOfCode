@@ -6,7 +6,7 @@ use std::{
     vec,
 };
 
-use rs_10::*;
+use rs_2023_10::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -238,12 +238,10 @@ impl CycleFinder {
                         (Direction::Right, (0, -1)),
                     ],
                     Direction::Bottom => {
-                        vec![
-                            (Direction::Bottom, (-1, 0)), 
-                            (Direction::Left, (0, -1))]
+                        vec![(Direction::Bottom, (-1, 0)), (Direction::Left, (0, -1))]
                     }
                     Direction::Left => {
-                        vec![(Direction::Bottom, (-1, 0)), (Direction::Left, (0,-1))]
+                        vec![(Direction::Bottom, (-1, 0)), (Direction::Left, (0, -1))]
                     }
                     Direction::Right => vec![
                         (Direction::Bottom, (0, 1)),
@@ -261,10 +259,7 @@ impl CycleFinder {
                         (Direction::Left, (0, -1)),
                     ],
                     Direction::Bottom => {
-                        vec![
-                            (Direction::Bottom, (1, 0)), 
-                            (Direction::Right, (0, -1))
-                        ]
+                        vec![(Direction::Bottom, (1, 0)), (Direction::Right, (0, -1))]
                     }
                     Direction::Left => vec![
                         (Direction::Bottom, (0, 1)),
@@ -443,7 +438,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_10::static_read("example2.txt");
+        let file = rs_2023_10::static_read("example2.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
@@ -452,17 +447,16 @@ mod test {
 
     #[test]
     fn second_test() {
-        let file = rs_10::static_read("example3.txt");
+        let file = rs_2023_10::static_read("example3.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
         assert_eq!(result, 4);
-
     }
 
     #[test]
     fn third_test() {
-        let file = rs_10::static_read("example4.txt");
+        let file = rs_2023_10::static_read("example4.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
@@ -471,7 +465,7 @@ mod test {
 
     #[test]
     fn fourth_test() {
-        let file = rs_10::static_read("example5.txt");
+        let file = rs_2023_10::static_read("example5.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
@@ -480,7 +474,7 @@ mod test {
 
     #[test]
     fn fifth_test() {
-        let file = rs_10::static_read("example6.txt");
+        let file = rs_2023_10::static_read("example6.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
@@ -489,7 +483,7 @@ mod test {
 
     #[test]
     fn sixth_test() {
-        let file = rs_10::static_read("example7.txt");
+        let file = rs_2023_10::static_read("example7.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();
@@ -499,7 +493,7 @@ mod test {
     #[test]
     #[ignore = "Inputs are not included and vary by person"]
     fn input_test() {
-        let file = rs_10::static_read("input1.txt");
+        let file = rs_2023_10::static_read("input1.txt");
         let maze = PipeMaze::new(file);
         println!("{}", maze);
         let result = maze.find_enclosed();

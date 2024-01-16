@@ -1,4 +1,4 @@
-use rs_13::*;
+use rs_2023_13::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -25,7 +25,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input = rs_13::static_read("example1.txt");
+        let input = rs_2023_13::static_read("example1.txt");
         let (_, mirror_inputs) = parse_file(input).unwrap();
         let result = mirror_inputs
             .iter()
@@ -44,13 +44,13 @@ mod test {
     #[test]
     #[ignore = "Relies on a set of inputs and known outputs not provided"]
     fn problematic_inputs() {
-        let answers = rs_13::static_read("answers1.txt");
+        let answers = rs_2023_13::static_read("answers1.txt");
         let answers = answers
             .lines()
             .map(|line| line.parse::<usize>().unwrap())
             .collect::<Vec<_>>();
 
-        let input = rs_13::static_read("input1.txt");
+        let input = rs_2023_13::static_read("input1.txt");
         let (_, mirror_inputs) = parse_file(input).unwrap();
         let result = mirror_inputs
             .iter()
@@ -85,7 +85,7 @@ mod test {
 
     #[test]
     fn third_test() {
-        let input = rs_13::static_read("example2.txt");
+        let input = rs_2023_13::static_read("example2.txt");
         let (_, mirror_inputs) = parse_file(input).unwrap();
         let result = mirror_inputs
             .iter()
@@ -105,7 +105,7 @@ mod test {
 
     #[test]
     fn fourth_test() {
-        let input = rs_13::static_read("example3.txt");
+        let input = rs_2023_13::static_read("example3.txt");
         let (_, mirror_inputs) = parse_file(input).unwrap();
         let result = mirror_inputs
             .iter()

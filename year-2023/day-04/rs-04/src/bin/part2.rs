@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use rs_04::*;
+use rs_2023_04::*;
 
 fn main() {
     let input = *INPUT_1;
@@ -27,11 +27,11 @@ fn main() {
 #[cfg(test)]
 mod test {
     use itertools::Itertools;
-    use rs_04::{parse_scratchcard, CardStack};
+    use rs_2023_04::{parse_scratchcard, CardStack};
 
     #[test]
     fn second_test() {
-        let input = rs_04::static_read("example2.txt");
+        let input = rs_2023_04::static_read("example2.txt");
         let cards = input
             .lines()
             .map(parse_scratchcard)

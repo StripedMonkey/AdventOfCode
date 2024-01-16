@@ -6,7 +6,7 @@ use nom::{
     combinator::map,
     IResult,
 };
-use rs_18::*;
+use rs_2023_18::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -16,7 +16,7 @@ fn main() {
 
 fn parse_color(color_str: &str) -> IResult<&str, &str> {
     let (color_str, _) = tag("(#")(color_str)?;
-    let (color_str, rgb) =take(6usize)(color_str)?;
+    let (color_str, rgb) = take(6usize)(color_str)?;
     let (color_str, _) = tag(")")(color_str)?;
     Ok((color_str, rgb))
 }
@@ -41,7 +41,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_18::static_read("example1.txt");
+        let file = rs_2023_18::static_read("example1.txt");
         let (_, plan) = parse_file(file).unwrap();
         let result = plan.direct_volume(Clock::Clockwise);
         assert_eq!(result, 62);
@@ -49,7 +49,7 @@ mod test {
 
     #[test]
     fn second_test() {
-        let file = rs_18::static_read("example2.txt");
+        let file = rs_2023_18::static_read("example2.txt");
         let (_, plan) = parse_file(file).unwrap();
         let result = plan.direct_volume(Clock::Counter);
         assert_eq!(result, 36);

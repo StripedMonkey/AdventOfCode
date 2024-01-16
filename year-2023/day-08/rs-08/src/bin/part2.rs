@@ -1,9 +1,9 @@
 use num::integer;
-use rs_08::*;
+use rs_2023_08::*;
 
 fn main() {
     let file = *INPUT_1;
-    // let file = rs_08::static_read("input2.txt");
+    // let file = rs_2023_08::static_read("input2.txt");
     let result = parse_network(file).unwrap().1;
     result
         .starting_nodes("A")
@@ -35,14 +35,14 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_08::static_read("example1.txt");
+        let file = rs_2023_08::static_read("example1.txt");
         let result = parse_network(&file).unwrap().1;
         let result = result
             .walk("AAA")
             .inspect(|i| {
                 println!("Curent Node: {i:?}");
             })
-            .take_while(|(idx, node)| *node != "ZZZ")
+            .take_while(|(_, node)| *node != "ZZZ")
             .count();
         assert_eq!(result, 2);
         println!("{result:?}")
@@ -50,14 +50,14 @@ mod test {
 
     #[test]
     fn second_test() {
-        let file = rs_08::static_read("example2.txt");
+        let file = rs_2023_08::static_read("example2.txt");
         let result = parse_network(&file).unwrap().1;
         let result = result
             .walk("AAA")
             .inspect(|i| {
                 println!("Curent Node: {i:?}");
             })
-            .take_while(|(idx, node)| *node != "ZZZ")
+            .take_while(|(_, node)| *node != "ZZZ")
             .count();
         assert_eq!(result, 6);
         println!("{result:?}")
@@ -65,14 +65,14 @@ mod test {
 
     #[test]
     fn third_test() {
-        let file = rs_08::static_read("example2.txt");
+        let file = rs_2023_08::static_read("example2.txt");
         let result = parse_network(&file).unwrap().1;
         let mut walkers: Vec<_> = result
             .starting_nodes("A")
             .map(|start_node| {
                 result
                     .walk(start_node)
-                    .map(|(i, node)| (node, node.ends_with("Z")))
+                    .map(|(_, node)| (node, node.ends_with("Z")))
             })
             .collect();
         let mut steps = 0;
@@ -88,7 +88,7 @@ mod test {
 
     #[test]
     fn fourth_test() {
-        let file = rs_08::static_read("example3.txt");
+        let file = rs_2023_08::static_read("example3.txt");
         let result = parse_network(&file).unwrap().1;
         result
             .starting_nodes("A")

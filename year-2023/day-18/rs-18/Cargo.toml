@@ -1,5 +1,5 @@
 [package]
-name = "rs-18"
+name = "rs-2023-18"
 version = "0.1.0"
 edition = "2021"
 
@@ -19,11 +19,11 @@ num = { workspace = true }
 
 # Separate binaries are produced through the use of a separate "executable" located in `src/bin`
 # See https://doc.rust-lang.org/cargo/guide/project-layout.html
-# Each binary may be run with `cargo run --bin rs-18-pt<n>` without requiring the other to build
+# Each binary may be run with `cargo run --bin rs-2023-18-pt<n>` without requiring the other to build
 [[bin]]
-name = "rs-18-pt1"
+name = "rs-2023-18-pt1"
 path = "src/bin/part1.rs"
 
 [[bin]]
-name = "rs-18-pt2"
+name = "rs-2023-18-pt2"
 path = "src/bin/part2.rs"

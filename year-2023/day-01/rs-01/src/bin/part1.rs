@@ -1,4 +1,4 @@
-use rs_01::*;
+use rs_2023_01::*;
 
 // Brute force the first and last digits, since it's easy enough
 fn process_line(line: &str) -> u32 {

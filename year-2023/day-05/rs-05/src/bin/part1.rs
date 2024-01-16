@@ -1,4 +1,4 @@
-use rs_05::*;
+use rs_2023_05::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -17,7 +17,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_05::static_read("example1.txt");
+        let file = rs_2023_05::static_read("example1.txt");
         let (seeds_to_plant, almanac) = parse_seed_file(file).unwrap().1;
         let smallest_seed = seeds_to_plant
             .into_iter()

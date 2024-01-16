@@ -1,4 +1,4 @@
-use rs_13::*;
+use rs_2023_13::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -25,7 +25,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let input = rs_13::static_read("example1.txt");
+        let input = rs_2023_13::static_read("example1.txt");
         let (_, mirror_inputs) = parse_file(input).unwrap();
         let result = mirror_inputs
             .iter()

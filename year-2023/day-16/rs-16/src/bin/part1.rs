@@ -1,4 +1,4 @@
-use rs_16::*;
+use rs_2023_16::*;
 
 fn main() {
     let file = *INPUT_1;
@@ -13,7 +13,7 @@ mod test {
 
     #[test]
     fn first_test() {
-        let file = rs_16::static_read("example1.txt");
+        let file = rs_2023_16::static_read("example1.txt");
         let map = parse_file(&file);
         let result = map.traverse((Direction::Right, (0, 0)));
         println!("Result: {}", result);
