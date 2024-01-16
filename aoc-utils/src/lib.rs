@@ -1,13 +1,10 @@
-use std::{
-    env, io,
-    path::{Path, PathBuf},
-    str::FromStr,
-};
+use std::{env, path::PathBuf, str::FromStr};
 
 use crate::meta::DayMeta;
 
 pub mod cycles;
 mod meta;
+mod text;
 
 lazy_static::lazy_static! {
     pub static ref DAY_META: DayMeta<'static> = meta::generate_meta();

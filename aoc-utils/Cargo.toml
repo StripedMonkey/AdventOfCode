@@ -1,7 +1,9 @@
 [package]
 name = "aoc-utils"
 version = "0.1.0"
-
+edition = "2021"
 
 [dependencies]
 lazy_static = { workspace = true }
+regex = { workspace = true }
+tracing = { workspace = true }
