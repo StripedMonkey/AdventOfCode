@@ -1,7 +1,7 @@
 use core::num;
 
 use rs_2024_01::*;
-const MAX_RGB: Rgb = (12, 13, 14);
+use aoc_utils::*;
 
 fn main() {
     let input = rs_2024_01::static_read("input1.txt");

@@ -37,11 +37,10 @@ pub fn parse(input: &str) -> (Vec<usize>,Vec<usize>) {
     let data = input.lines().map(|line| {
         let line: Vec<usize> = line.split_whitespace().map(|num| num.parse().unwrap()).collect();
         (line[0],line[1])
-    }).fold((Vec::new(),Vec::new()),|mut a,b| {
-        a.0.push(b.0);
-        a.1.push(b.1);
-        a
+    }).fold((Vec::new(),Vec::new()),|(mut left_list,mut right_list),b| {
+        left_list.push(b.0);
+        right_list.push(b.1);
+        (left_list,right_list)
     });
-
     data
 }
