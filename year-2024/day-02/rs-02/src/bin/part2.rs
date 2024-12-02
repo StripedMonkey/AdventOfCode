@@ -14,13 +14,12 @@ fn valid_reports<'a>(
 ) -> impl Iterator<Item = &'a Vec<usize>> {
     reports.filter(|report| {
         for dir in [true, false] {
-            if let Err(idx) = valid_report(report, dir) {
-                let mut working_report = report.to_vec();
-                working_report.remove(idx);
-                if valid_report(&working_report, dir).is_ok() {
-                    return true;
-                }
-            } else {
+            let Err(idx) = valid_report(report, dir) else {
+                return true;
+            };
+            let mut working_report = report.to_vec();
+            working_report.remove(idx);
+            if valid_report(&working_report, dir).is_ok() {
                 return true;
             }
         }
@@ -39,13 +38,13 @@ pub fn valid_report(report: &[usize], increasing: bool) -> Result<bool, usize> {
         }
         // Either the current index, or the next index is invalid, to determine which:
         // If i and i + 2 is valid, then it's i+1 that's invalid
-        if let Some(j) = report.get(i + 2) {
-            if is_valid(report[i], *j, increasing) {
-                return Err(i + 1);
-            }
-            return Err(i);
+        let Some(j) = report.get(i + 2) else {
+            return Err(i + 1);
+        };
+        if is_valid(report[i], *j, increasing) {
+            return Err(i + 1);
         }
-        return Err(i + 1);
+        return Err(i);
     }
     Ok(true)
 }
@@ -109,10 +108,7 @@ mod test {
 
     #[test]
     fn test_validity() {
-        let test_cases = [
-            (vec![2, 5, 7, 4], 3),
-            (vec![2, 5, 7, 7, 4], 2),
-        ];
+        let test_cases = [(vec![2, 5, 7, 4], 3), (vec![2, 5, 7, 7, 4], 2)];
         for (report, expected) in test_cases.iter() {
             let res = valid_report(report, true);
             assert_eq!(res.is_err(), true, "Expected Error on {:?}", report);
