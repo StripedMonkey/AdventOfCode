@@ -3,17 +3,6 @@ extern crate lazy_static;
 
 use std::{env, path::PathBuf, str::FromStr};
 
-use nom::{
-    self,
-    bytes::complete::tag,
-    character::complete::{alpha1, u64},
-    multi::separated_list1,
-    sequence::separated_pair,
-    IResult,
-};
-
-pub type Rgb = (u64, u64, u64);
-type NomError<'a, T> = nom::Err<nom::error::Error<T>>;
 
 // The input texts are static, should it be? Probably not, but it was an excuse to do it this way.
 lazy_static! {
@@ -43,4 +32,34 @@ pub fn parse(input: &str) -> Vec<Vec<usize>> {
             numbers
         })
         .collect()
+}
+
+pub fn valid_report(report: &[usize], increasing: bool) -> Result<bool, usize> {
+    for (i, valid) in report
+        .windows(2)
+        .map(|w| is_valid(w[0], w[1], increasing))
+        .enumerate()
+    {
+        if valid {
+            continue;
+        }
+        // Either the current index, or the next index is invalid, to determine which:
+        // If i and i + 2 is valid, then it's i+1 that's invalid
+        let Some(j) = report.get(i + 2) else {
+            return Err(i + 1);
+        };
+        if is_valid(report[i], *j, increasing) {
+            return Err(i + 1);
+        }
+        return Err(i);
+    }
+    Ok(true)
+}
+
+fn is_valid(a: usize, b: usize, increasing: bool) -> bool {
+    let res = (a > b) ^ increasing;
+    match a.abs_diff(b) {
+        1..=3 => res,
+        _ => false,
+    }
 }
