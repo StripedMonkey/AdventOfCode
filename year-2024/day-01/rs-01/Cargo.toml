@@ -21,6 +21,6 @@ aoc-utils = { path = "../../../aoc-utils" }
 name = "rs-2024-01-pt1"
 path = "src/bin/part1.rs"
 
-# [[bin]]
-# name = "rs-2024-01-pt2"
-# path = "src/bin/part2.rs"
+[[bin]]
+name = "rs-2024-01-pt2"
+path = "src/bin/part2.rs"
