@@ -85,22 +85,8 @@ mod test {
     fn first_test() {
         let input = rs_2024_02::static_read("example1.txt");
         let data = parse(input);
-        let ans = data
-            .iter()
-            .filter(|report| {
-                for dir in [true, false] {
-                    if let Err(idx) = valid_report(report, dir) {
-                        let mut working_report = (*report).clone();
-                        working_report.remove(idx);
-                        if valid_report(&working_report, dir).is_ok() {
-                            return true;
-                        }
-                    } else {
-                        return true;
-                    }
-                }
-                false
-            })
+        let ans = valid_reports(data.iter())
+            .map(|report| println!("{:?}", report))
             .count();
         println!("{}", ans);
         assert!(ans == 4)
