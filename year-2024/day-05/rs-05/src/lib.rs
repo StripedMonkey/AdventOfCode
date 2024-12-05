@@ -27,12 +27,13 @@ pub fn parse(input: &str) -> (Vec<(usize, usize)>, Vec<Vec<usize>>) {
             break;
         }
         let Some((left, right)) = line.split_once("|") else {
-            panic!("Invalid");
+            unreachable!("Invalid");
         };
         let left = left.parse::<usize>().unwrap();
         let right = right.parse::<usize>().unwrap();
         ordering_rules.push((left, right));
     }
+    ordering_rules.sort();
     let page_updates: Vec<Vec<usize>> = lines
         .map(|line| {
             line.split(',')
@@ -45,12 +46,21 @@ pub fn parse(input: &str) -> (Vec<(usize, usize)>, Vec<Vec<usize>>) {
 
 pub fn compare(ordering_rules: &Vec<(usize, usize)>) -> impl FnMut(&usize, &usize) -> Ordering + '_ {
     |a, b| {
-        if ordering_rules.contains(&(*a, *b)) {
+        if ordering_rules.binary_search(&(*a, *b)).is_ok() {
             Ordering::Greater
-        } else if ordering_rules.contains(&(*b, *a)) {
+        } else if ordering_rules.binary_search(&(*b, *a)).is_ok() {
             Ordering::Less
         } else {
             Ordering::Equal
         }
     }
+}
+
+pub fn is_valid(update: &Vec<usize>, ordering_rules: &Vec<(usize, usize)>) -> bool {
+    let mut comparator = compare(&ordering_rules);
+    update.iter().enumerate().all(|(idx, e)| {
+        update[idx + 1..]
+            .iter()
+            .all(|f| comparator(e, f) != Ordering::Less)
+    })
 }
