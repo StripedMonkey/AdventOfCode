@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::{env, path::PathBuf, str::FromStr};
+use std::{cmp::Ordering, env, path::PathBuf, str::FromStr};
 
 // The input texts are static, should it be? Probably not, but it was an excuse to do it this way.
 lazy_static! {
@@ -18,4 +18,39 @@ pub fn static_read(file_path: &str) -> &'static str {
     println!("{:?}",file_path);
     let file = std::fs::read_to_string(file_path).expect("Failed to open file!");
     Box::leak(file.into_boxed_str())
+}
+pub fn parse(input: &str) -> (Vec<(usize, usize)>, Vec<Vec<usize>>) {
+    let mut lines = input.lines();
+    let mut ordering_rules = Vec::new();
+    while let Some(line) = lines.next() {
+        if line.is_empty() {
+            break;
+        }
+        let Some((left, right)) = line.split_once("|") else {
+            panic!("Invalid");
+        };
+        let left = left.parse::<usize>().unwrap();
+        let right = right.parse::<usize>().unwrap();
+        ordering_rules.push((left, right));
+    }
+    let page_updates: Vec<Vec<usize>> = lines
+        .map(|line| {
+            line.split(',')
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect()
+        })
+        .collect();
+    (ordering_rules, page_updates)
+}
+
+pub fn compare(ordering_rules: &Vec<(usize, usize)>) -> impl FnMut(&usize, &usize) -> Ordering + '_ {
+    |a, b| {
+        if ordering_rules.contains(&(*a, *b)) {
+            Ordering::Greater
+        } else if ordering_rules.contains(&(*b, *a)) {
+            Ordering::Less
+        } else {
+            Ordering::Equal
+        }
+    }
 }
