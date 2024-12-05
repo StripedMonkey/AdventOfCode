@@ -1,8 +1,8 @@
 #[macro_use]
 extern crate lazy_static;
 
+use itertools::Itertools;
 use std::{cmp::Ordering, env, path::PathBuf, str::FromStr};
-
 // The input texts are static, should it be? Probably not, but it was an excuse to do it this way.
 lazy_static! {
     pub static ref INPUT_1: &'static str = static_read("input1.txt");
@@ -15,7 +15,7 @@ pub fn static_read(file_path: &str) -> &'static str {
     let mut cwd = PathBuf::from_str(env!("CARGO_MANIFEST_DIR")).expect("Infallible action failed!");
     cwd.pop();
     let file_path = cwd.join(file_path);
-    println!("{:?}",file_path);
+    println!("{:?}", file_path);
     let file = std::fs::read_to_string(file_path).expect("Failed to open file!");
     Box::leak(file.into_boxed_str())
 }
@@ -44,7 +44,9 @@ pub fn parse(input: &str) -> (Vec<(usize, usize)>, Vec<Vec<usize>>) {
     (ordering_rules, page_updates)
 }
 
-pub fn compare(ordering_rules: &Vec<(usize, usize)>) -> impl FnMut(&usize, &usize) -> Ordering + '_ {
+pub fn compare(
+    ordering_rules: &Vec<(usize, usize)>,
+) -> impl FnMut(&usize, &usize) -> Ordering + '_ {
     |a, b| {
         if ordering_rules.binary_search(&(*a, *b)).is_ok() {
             Ordering::Greater
@@ -58,7 +60,8 @@ pub fn compare(ordering_rules: &Vec<(usize, usize)>) -> impl FnMut(&usize, &usiz
 
 pub fn is_valid(update: &Vec<usize>, ordering_rules: &Vec<(usize, usize)>) -> bool {
     let mut comparator = compare(&ordering_rules);
-    update[..update.len()-1].iter().enumerate().all(|(idx, e)| {
-        comparator(e, &update[idx + 1]) != Ordering::Less
-    })
+    update
+        .iter()
+        .tuple_windows()
+        .all(|(a, b)| comparator(a, b) != Ordering::Less)
 }
