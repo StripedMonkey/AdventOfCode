@@ -65,7 +65,7 @@ mod test {
     fn first_test() {
         let input = rs_2024_04::static_read("example1.txt");
         let grid: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
-        let mut starting_points = Vec::new();
+        let mut starting_points: Vec<(usize, usize)> = Vec::new();
         grid.iter().enumerate().for_each(|(i, row)| {
             row.iter().enumerate().for_each(|(j, cell)| {
                 if *cell == 'X' {

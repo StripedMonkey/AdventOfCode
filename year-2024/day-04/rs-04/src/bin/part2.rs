@@ -1,4 +1,5 @@
 use aoc_utils::*;
+use itertools::Itertools;
 use rs_2024_04::*;
 
 fn main() {
@@ -12,17 +13,11 @@ fn main() {
             }
         })
     });
-    let directions: Vec<(isize, isize)> = vec![
-        (1, 1),
-        (1, -1),
-    ];
+    let directions: Vec<(isize, isize)> = vec![(1, 1), (1, -1)];
     let answer: usize = starting_points
-        .iter().filter(|(i,j)| {
-            !(*i == 0 || *j == 0 || *i == grid.len() - 1 || *j == grid[0].len() - 1)
-        })
+        .iter()
+        .filter(|(i, j)| !(*i == 0 || *j == 0 || *i == grid.len() - 1 || *j == grid[0].len() - 1))
         .map(|(i, j)| {
-            // starting in one of the direction, go opposite and see if you get m a s
-            let mut found_Xs = 0;
             for (dx, dy) in &directions {
                 let first = grid[(*i as isize + dx) as usize][(*j as isize + dy) as usize];
                 let second = grid[(*i as isize - dx) as usize][(*j as isize - dy) as usize];
@@ -34,6 +29,7 @@ fn main() {
         })
         .sum();
     println!("{}", answer);
+    assert!(answer == 1939);
 }
 
 #[cfg(test)]
@@ -52,17 +48,14 @@ mod test {
                 }
             })
         });
-        let directions: Vec<(isize, isize)> = vec![
-            (1, 1),
-            (1, -1),
-        ];
+        let directions: Vec<(isize, isize)> = vec![(1, 1), (1, -1)];
         let answer: usize = starting_points
-            .iter().filter(|(i,j)| {
+            .iter()
+            .filter(|(i, j)| {
                 !(*i == 0 || *j == 0 || *i == grid.len() - 1 || *j == grid[0].len() - 1)
             })
             .map(|(i, j)| {
                 // starting in one of the direction, go opposite and see if you get m a s
-                let mut found_Xs = 0;
                 for (dx, dy) in &directions {
                     let first = grid[(*i as isize + dx) as usize][(*j as isize + dy) as usize];
                     let second = grid[(*i as isize - dx) as usize][(*j as isize - dy) as usize];
