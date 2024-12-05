@@ -58,9 +58,7 @@ pub fn compare(ordering_rules: &Vec<(usize, usize)>) -> impl FnMut(&usize, &usiz
 
 pub fn is_valid(update: &Vec<usize>, ordering_rules: &Vec<(usize, usize)>) -> bool {
     let mut comparator = compare(&ordering_rules);
-    update.iter().enumerate().all(|(idx, e)| {
-        update[idx + 1..]
-            .iter()
-            .all(|f| comparator(e, f) != Ordering::Less)
+    update[..update.len()-1].iter().enumerate().all(|(idx, e)| {
+        comparator(e, &update[idx + 1]) != Ordering::Less
     })
 }
