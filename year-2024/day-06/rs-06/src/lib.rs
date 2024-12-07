@@ -49,3 +49,7 @@ pub fn step(map: &Vec<Vec<char>>, current_position: (usize, usize)) -> Step {
         _ => Step::Move((current_position.0.wrapping_add_signed(move_dir.0), current_position.1.wrapping_add_signed(move_dir.1))),
     }
 }
+
+pub fn parse(input: &str) -> Vec<Vec<char>> {
+    input.lines().map(|group| group.chars().collect()).collect()
+}

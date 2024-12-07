@@ -87,6 +87,3 @@ mod test {
     }
 }
 
-fn parse(input: &str) -> Vec<Vec<char>> {
-    input.lines().map(|group| group.chars().collect()).collect()
-}
