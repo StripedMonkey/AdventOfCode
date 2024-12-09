@@ -1,6 +1,6 @@
-
 use std::{collections::HashMap, env, path::PathBuf, str::FromStr};
 
+use itertools::Itertools as _;
 
 // Read a file path relative to the parent of the current day's project directory.
 // Each day contains the inputs and examples for that day in the the parent, so I can
@@ -17,6 +17,29 @@ pub fn static_read(file_path: &str) -> &'static str {
 pub struct Map {
     pub bounds: (usize, usize),
     pub towers: Vec<(char, Vec<(usize, usize)>)>,
+}
+
+pub fn antinodes(
+    (ax, ay): (isize, isize),
+    (bx, by): (isize, isize),
+    bounds: (usize, usize),
+    start_harmonic: usize,
+    end_harmonic: usize,
+) -> impl Iterator<Item = (isize, isize)> {
+    let (dx, dy) = (ax - bx, ay - by);
+    let pos_harmonics = (start_harmonic as isize..end_harmonic as isize)
+        .map(move |harmonic| (dx * harmonic, dy * harmonic))
+        .map(move |(hx, hy)| (ax + hx, ay + hy))
+        .take_while(move |(x, y)| {
+            (0..bounds.0 as isize).contains(x) && (0..bounds.1 as isize).contains(y)
+        });
+    let neg_harmonics = (start_harmonic as isize..end_harmonic as isize)
+        .map(move |harmonic| (dx * harmonic, dy * harmonic))
+        .map(move |(hx, hy)| (bx - hx, by - hy))
+        .take_while(move |(x, y)| {
+            (0..bounds.0 as isize).contains(x) && (0..bounds.1 as isize).contains(y)
+        });
+    pos_harmonics.chain(neg_harmonics)
 }
 
 pub fn parse(input: &str) -> Map {
