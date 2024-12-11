@@ -10,6 +10,7 @@ fn main() {
         .map(|(x, y)| unique_paths(&map, (*x, *y)))
         .sum();
     println!("{}", result);
+    assert!(result == 1340);
 }
 
 #[cfg(test)]

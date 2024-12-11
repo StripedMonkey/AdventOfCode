@@ -10,6 +10,7 @@ fn main() {
         .map(|(x, y)| reachable_peaks(&map, (*x, *y)))
         .sum();
     println!("{}", result);
+    assert!(result == 587);
 }
 
 #[cfg(test)]
@@ -47,12 +48,7 @@ fn reachable_peaks(map: &Vec<Vec<usize>>, starting_position: (usize, usize)) -> 
     let mut queue = VecDeque::new();
     let mut peaks: HashSet<(usize, usize)> = HashSet::new();
     queue.push_back(starting_position);
-    let mut visited = HashSet::new();
     while let Some((x, y)) = queue.pop_front() {
-        if visited.contains(&(x, y)) {
-            continue;
-        }
-        visited.insert((x, y));
         if map[y][x] == 9 {
             peaks.insert((x, y));
         }
