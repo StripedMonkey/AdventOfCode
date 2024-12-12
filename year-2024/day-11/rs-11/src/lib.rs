@@ -22,12 +22,11 @@ pub fn rule_1(value: usize) -> Option<Box<dyn Iterator<Item = usize>>> {
 }
 
 pub fn rule_2(value: usize) -> Option<Box<dyn Iterator<Item = usize>>> {
-    let s = format!("{}", value);
-    if s.len() % 2 == 0 {
-        let (a, b) = s.split_at(s.len() / 2);
-        return Some(Box::new(
-            iter::once(a.parse().unwrap()).chain(iter::once(b.parse().unwrap())),
-        ));
+    let digits = value.ilog10() + 1;
+    if digits % 2 == 0 {
+        let upper = value / 10usize.pow(digits / 2);
+        let lower = value % 10usize.pow(digits / 2);
+        return Some(Box::new(iter::once(upper).chain(iter::once(lower))));
     }
     None
 }
