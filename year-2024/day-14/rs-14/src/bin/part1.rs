@@ -1,0 +1,162 @@
+use aoc_utils::*;
+use nom::{
+    bytes::complete::tag,
+    character::complete::digit1,
+    combinator::{all_consuming, map_res, opt},
+    number,
+    sequence::{separated_pair, tuple},
+    IResult,
+};
+use rs_2024_14::*;
+
+fn main() {
+    let input = rs_2024_14::static_read("input1.txt");
+    let mut robots = parse(&input);
+    let room_size = (101, 103);
+    for robot in robots.iter_mut() {
+        robot.step(100, room_size);
+    }
+    let mut counts = [[0; 2]; 2];
+    for robot in robots.iter() {
+        if (robot.position.0 as usize) == room_size.0 / 2 {
+            continue;
+        }
+        if (robot.position.1 as usize) == room_size.1 / 2 {
+            continue;
+        }
+        if (robot.position.0 as usize) < room_size.0 / 2 {
+            if (robot.position.1 as usize) < room_size.1 / 2 {
+                counts[0][0] += 1;
+            } else {
+                counts[0][1] += 1;
+            }
+        } else {
+            if (robot.position.1 as usize) < room_size.1 / 2 {
+                counts[1][0] += 1;
+            } else {
+                counts[1][1] += 1;
+            }
+        }
+    }
+    println!("{:?}", counts);
+    println!("{:?}", counts.iter().flatten().product::<usize>())
+
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn first_test() {
+        let input = rs_2024_14::static_read("example1.txt");
+        let mut robots = parse(&input);
+        let room_size = (11, 7);
+        print_room(&robots, room_size);
+        for robot in robots.iter_mut() {
+            robot.step(100, room_size);
+        }
+        let mut counts = [[0; 2]; 2];
+        for robot in robots.iter() {
+            if (robot.position.0 as usize) == room_size.0 / 2 {
+                continue;
+            }
+            if (robot.position.1 as usize) == room_size.1 / 2 {
+                continue;
+            }
+            if (robot.position.0 as usize) < room_size.0 / 2 {
+                if (robot.position.1 as usize) < room_size.1 / 2 {
+                    counts[0][0] += 1;
+                } else {
+                    counts[0][1] += 1;
+                }
+            } else {
+                if (robot.position.1 as usize) < room_size.1 / 2 {
+                    counts[1][0] += 1;
+                } else {
+                    counts[1][1] += 1;
+                }
+            }
+        }
+        println!("{:?}", counts);
+        println!("{:?}", counts.iter().flatten().product::<usize>())
+    }
+
+    #[test]
+    fn second_test() {
+        let mut robots = vec![Robot {
+            position: (2, 4),
+            velocity: (2, -3),
+        }];
+        let room_size = (11, 7);
+        for _ in 0..4 {
+            for robot in robots.iter_mut() {
+                robot.step(1, room_size);
+            }
+        }
+    }
+}
+
+struct Robot {
+    position: (isize, isize),
+    velocity: (isize, isize),
+}
+
+fn print_room(robots: &[Robot], room_size: (usize, usize)) {
+    for y in 0..room_size.1 {
+        for x in 0..room_size.0 {
+            let num_robots = robots
+                .iter()
+                .filter(|r| r.position == (x as isize, y as isize))
+                .count();
+            if num_robots > 0 {
+                print!("{}", num_robots);
+                continue;
+            }
+            print!(".");
+        }
+        println!();
+    }
+}
+
+impl Robot {
+    fn step(&mut self, steps: usize, room_size: (usize, usize)) {
+        self.position.0 += self.velocity.0 * steps as isize;
+        self.position.1 += self.velocity.1 * steps as isize;
+        self.position.0 %= room_size.0 as isize;
+        if self.position.0 < 0 {
+            self.position.0 += room_size.0 as isize;
+        }
+        self.position.1 %= room_size.1 as isize;
+        if self.position.1 < 0 {
+            self.position.1 += room_size.1 as isize;
+        }
+    }
+}
+fn number(input: &str) -> IResult<&str, isize> {
+    let (input, sign) = opt(tag("-"))(input)?;
+    let (input, number) = map_res(digit1, |n| isize::from_str_radix(n, 10))(input)?;
+    Ok((input, sign.map_or(Ok(number), |_| Ok(-number))?))
+}
+// p=0,4 v=3,-3
+fn robot(input: &str) -> IResult<&str, Robot> {
+    let (input, _) = tag("p=")(input)?;
+    let (input, position) = separated_pair(number, tag(","), number)(input)?;
+    let (input, _) = tag(" v=")(input)?;
+    let (input, velocity) = separated_pair(number, tag(","), number)(input)?;
+    Ok((
+        input,
+        Robot {
+            position: (position.0, position.1),
+            velocity,
+        },
+    ))
+}
+
+fn parse(input: &str) -> Vec<Robot> {
+    let robots: Result<_, _> = input
+        .lines()
+        .map(|line| all_consuming(robot)(line).map(|(_, r)| r))
+        .collect();
+    robots.unwrap()
+}
