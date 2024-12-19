@@ -1,0 +1,48 @@
+2,4
+1,2
+7,5
+4,5
+0,3
+1,7
+5,5
+3,0
+
+bst,4
+bxl,2
+cdv,5
+bxc,5
+adv,3
+bxl,7
+out,5
+jnz,0
+
+bst,A
+bxl,2
+cdv,B
+bxc,C
+adv,3
+bxl,7
+out,B
+jnz,0
+
+bst,A B = A % 8
+bxl,2 B = B ^ 2
+cdv,B C = A / (2**B)
+bxc,C B = C ^ B
+adv,3 A = A / (2**3)
+bxl,7 B = B ^ 7
+out,B print B
+jnz,0
+
+
+B = (A % 8) ^ 2
+B = (A / (2**B)) ^ B
+A = A / 8
+B = B ^ 7
+print B
+jnz,0
+
+
+0..2^3
+A -> Out
+ 0
