@@ -17,7 +17,7 @@ fn main() {
             (name, outputs)
         })
         .collect::<HashMap<&str, Vec<&str>>>();
-    let paths = pathfinding::directed::count_paths::count_paths(
+    let paths = count_paths(
         "you",
         |&pos| devices.get(pos).unwrap().iter().map(|s| *s),
         |&pos| pos == "out",
@@ -27,9 +27,8 @@ fn main() {
 
 #[cfg(test)]
 mod test {
+    use pathfinding::prelude::*;
     use std::collections::HashMap;
-
-    use itertools::Itertools as _;
 
     #[test]
     fn first_test() {
@@ -48,7 +47,7 @@ mod test {
                 (name, outputs)
             })
             .collect::<HashMap<&str, Vec<&str>>>();
-        let paths = pathfinding::directed::count_paths::count_paths(
+        let paths = count_paths(
             "you",
             |&pos| devices.get(pos).unwrap().iter().map(|s| *s),
             |&pos| pos == "out",
